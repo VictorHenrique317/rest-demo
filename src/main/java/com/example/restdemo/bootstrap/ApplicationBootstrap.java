@@ -21,10 +21,10 @@ public class ApplicationBootstrap implements CommandLineRunner {
     public void run(String... args) throws Exception {
         log.setLevel(Level.DEBUG);
         log.info("Bootstrapping");
-        User first = new User();
-        first.setName("Mathew");
-        first.setEmail("mathew@yyahoo.com");
-        userRepository.save(first);
+//        User first = new User();
+//        first.setName("Mathew");
+//        first.setEmail("mathew@yyahoo.com");
+//        userRepository.save(first);
 //
 //        User second = new User();
 //        second.setName("Dawkins");

@@ -1,13 +1,15 @@
 package com.example.restdemo.domain;
 
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode(of = {"name", "email"})
 @Entity
 public class User {
     @Id
