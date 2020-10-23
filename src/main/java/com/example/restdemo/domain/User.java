@@ -1,20 +1,24 @@
 package com.example.restdemo.domain;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.List;
 
 @Getter
 @Setter
 @EqualsAndHashCode(of = {"name", "email"})
 @Entity
-public class User {
+public class User implements DomainModel{
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
     private String name;
     private String email;
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "user")
+    private List<Post> posts;
 }

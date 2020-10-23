@@ -20,7 +20,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     Optional<User> findByNameAndEmail(String name, String email);
 
     @Query("SELECT u FROM User AS u WHERE u.email LIKE :emailType")
-    Page<Collection<User>> getByEmailType(String emailType, Pageable pageable);
+    Page<User> getByEmailType(String emailType, Pageable pageable);
 
     @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query("UPDATE User AS u SET u.name= :name, u.email= :email WHERE u.id=:id")

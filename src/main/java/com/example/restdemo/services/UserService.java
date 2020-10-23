@@ -1,31 +1,38 @@
 package com.example.restdemo.services;
 
+import com.example.restdemo.domain.Post;
 import com.example.restdemo.domain.User;
 import com.example.restdemo.repository.UserRepository;
+import com.example.restdemo.utils.RepositoryMethods;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
-import java.util.Collection;
+import java.awt.print.PageFormat;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
 @Service
 public class UserService {
     private UserRepository userRepository;
+    private RepositoryMethods<User> repositoryMethods;
 
     @Autowired
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
+        this.repositoryMethods = new RepositoryMethods<>(userRepository);
     }
 
     public User findById(int id){
-        Optional<User> result = userRepository.findById(id);
-        return result.orElse(null);
+        return repositoryMethods.findById(id);
     }
 
     public User findByName(String name){
@@ -33,8 +40,8 @@ public class UserService {
         return result.orElse(null);
     }
 
-    public Page<Collection<User>> findByEmailType(String emailType, int page, int pageSize){
-        Page<Collection<User>> result = userRepository.getByEmailType("%" + emailType + "%",
+    public Page<User> findByEmailType(String emailType, int page, int pageSize){
+        Page<User> result = userRepository.getByEmailType("%" + emailType + "%",
                 PageRequest.of(page, pageSize));
         if (result.getTotalElements() == 0) return null; // No results
         return result;
@@ -51,7 +58,7 @@ public class UserService {
     }
 
     @Transactional
-    public User save(String name, String email){
+    public User save(@NonNull String name, @NonNull String email){
         User user = new User();
         user.setName(name);
         user.setEmail(email);
@@ -67,11 +74,20 @@ public class UserService {
 
     @Transactional
     public User delete(int id){
-        Optional<User> possibleEntry = userRepository.findById(id);
-        if (possibleEntry.isPresent()) {
-            userRepository.deleteById(id);
-        }
-        return possibleEntry.orElse(null);
+      return repositoryMethods.delete(id);
     }
 
+    public Page<User> findAll(int page, int size) {
+        return repositoryMethods.findAll(page, size);
+    }
+
+    public Page<Post> getPostsForUser(int id, int page, int size) {
+        Optional<User> possibleUser = userRepository.findById(id);
+        List<Post> posts = null;
+        if (possibleUser.isPresent()){
+            posts = possibleUser.get().getPosts();
+            return new PageImpl<>(posts, PageRequest.of(page, size), posts.size());
+        }
+        return null;
+    }
 }
