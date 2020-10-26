@@ -5,6 +5,7 @@ import com.example.restdemo.services.PostService;
 import com.example.restdemo.utils.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,16 +21,28 @@ public class PostController {
         this.postService = postService;
     }
 
+    @PostMapping
+    public Object savePost(String user, String message){
+        return Validation.defineResponse(postService.save(user, message));
+    }
+
+    @GetMapping Object getAllPosts(Pageable pageable){
+        return Validation.defineResponse(postService.findAll(pageable));
+    }
+
     @GetMapping("{id}")
     public Object getPostById(@PathVariable int id){
        return Validation.defineResponse(postService.findById(id));
     }
 
-//    @GetMapping("user/{id}")
-//    public Object getPostsForUser(@PathVariable int id,
-//                                      @RequestParam(required = false, defaultValue = "0") int page,
-//                                      @RequestParam(required = false, defaultValue = "3") int size){
-//        return Validation.defineResponse(postService.findByUser(id, page, size));
-//    }
+    @PutMapping("{id}")
+    public Object updatePost(@PathVariable int id,
+                             @RequestBody Post post){
+        return Validation.defineResponse(postService.update(id, post));
+    }
 
+    @DeleteMapping("{id}")
+    public Object deletePost(@PathVariable int id){
+        return Validation.defineResponse(postService.delete(id));
+    }
 }

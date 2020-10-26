@@ -1,4 +1,4 @@
-INSERT into User(name, email) VALUES ('Jonh', 'jonh@yahoo.com');
+INSERT into User(name, email) VALUES ('John', 'jonh@yahoo.com');
 INSERT into User(name, email) VALUES ('Rose', 'Rose@yahoo.com');
 INSERT into User(name, email) VALUES ('Anthony', 'Anthony@yahoo.com');
 INSERT into User(name, email) VALUES ('Jason', 'Jason@yahoo.com');

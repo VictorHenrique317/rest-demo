@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -23,7 +24,6 @@ public final class RepositoryMethods<T extends DomainModel> {
 
     public T findById(int id){
         Optional<T> result = repository.findById(id);
-        log.info("================================= {}", result.get());
         return result.orElse(null);
     }
 
@@ -35,8 +35,8 @@ public final class RepositoryMethods<T extends DomainModel> {
         return possibleEntry.orElse(null);
     }
 
-    public Page<T> findAll(int page, int size) {
-        return repository.findAll(PageRequest.of(page, size));
+    public Page<T> findAll(Pageable pageable) {
+        return repository.findAll(pageable);
     }
 
 }

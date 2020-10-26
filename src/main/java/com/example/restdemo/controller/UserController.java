@@ -6,6 +6,7 @@ import com.example.restdemo.services.UserService;
 import com.example.restdemo.utils.Validation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,17 +23,14 @@ public class UserController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Object insertUser(@RequestParam String name,
-                             @RequestParam String email) {
-        User user = userService.save(name, email);
-        if (user == null) throw new EntityConflictException();
+    public Object insertUser(@RequestBody User user) {
+        if (userService.save(user) == null) throw new EntityConflictException();
         return user;
     }
 
     @GetMapping
-    public Object getAllUsers(@RequestParam(required = false, defaultValue = "0")int page,
-                              @RequestParam(required = false, defaultValue = "3")int size){
-        return Validation.defineResponse(userService.findAll(page, size));
+    public Object getAllUsers(Pageable pageable){
+        return Validation.defineResponse(userService.findAll(pageable));
     }
 
     @GetMapping("{id}")
@@ -41,10 +39,8 @@ public class UserController {
     }
 
     @GetMapping("{id}/posts")
-    public Object getPostsForUser(int id,
-                                  @RequestParam(required = false, defaultValue = "0") int page,
-                                  @RequestParam(required = false, defaultValue = "3") int size){
-        return Validation.defineResponse(userService.getPostsForUser(id, page, size));
+    public Object getPostsForUser(@PathVariable int id, Pageable pageable){
+        return Validation.defineResponse(userService.getPostsForUser(id, pageable));
     }
 
     @GetMapping("name/{name}")
@@ -53,18 +49,14 @@ public class UserController {
     }
 
     @GetMapping("emailType/{emailType}")
-    public Object getByEmailType(@PathVariable String emailType,
-                                 @RequestParam(required = false, defaultValue = "0") int page,
-                                 @RequestParam(required = false, defaultValue = "3") int size) {
-        return Validation.defineResponse(userService.findByEmailType(emailType, page, size));
+    public Object getByEmailType(@PathVariable String emailType, Pageable pageable) {
+        return Validation.defineResponse(userService.findByEmailType(emailType, pageable));
     }
 
     @PutMapping("{id}")
     public Object updateUser(@PathVariable int id,
-                             @RequestParam(required = false) String name,
-                             @RequestParam(required = false) String email) {
-        log.info("Updating user {} with name {} and email {}", id, name, email);
-        return Validation.defineResponse(userService.updateUser(id, name, email));
+            @RequestBody User user) {
+        return Validation.defineResponse(userService.updateUser(id, user));
     }
 
     @DeleteMapping("{id}")
